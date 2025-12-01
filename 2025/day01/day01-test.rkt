@@ -9,7 +9,7 @@
     (port->lines (open-input-file "input.txt")))
   
   (define suite
-    (test-suite "Can count correct safe moves landing on n"
+    (test-suite "Can count correct safe moves"
       (test-eq? "Safe moves never lands on 0"
                 (count-safe-moves '("L40" "L20" "R40" "L50" "R99") 0)
                 0)
@@ -28,5 +28,17 @@
 
       (test-eq? "Safe moves from input.txt outputs correct result for part 1"
                 (count-safe-moves input-list 0)
-                962)))
+                962)
+      
+      (test-eq? "Basic new safe moves can be calculated"
+                (count-safe-moves-part2 '("R60" "R10" "L80" "L400"))
+                6)
+
+      (test-eq? "Complex new safe moves can be calculated"
+                (count-safe-moves-part2 '("R650" "R30" "L280" "L4" "R52" "L253" "L20" "L67" "R900" "R453"))
+                27)
+
+      (test-eq? "New safe moves calculates correct input.txt result for part 2"
+                (count-safe-moves-part2 input-list)
+                5782)))
   (run-tests suite))
