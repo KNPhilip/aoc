@@ -26,7 +26,7 @@
                 (count-safe-moves '("R5" "L50" "R20" "L20" "R1" "L1") 5)
                 3)
 
-      (test-eq? "Save moves from input.txt outputs correct result for part 1"
+      (test-eq? "Safe moves from input.txt outputs correct result for part 1"
                 (count-safe-moves input-list 0)
                 962)))
   (run-tests suite))
