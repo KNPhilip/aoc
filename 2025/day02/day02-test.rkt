@@ -36,5 +36,25 @@
 
       (test-eq? "Can sum square digits for input.txt part 1"
                 (sum-square-digits-in-ranges input)
-                18952700150)))
+                18952700150)
+      
+      (test-eq? "Can determine short repeating patterns for part 2"
+                (repeating-pattern? 121212)
+                #t)
+
+      (test-eq? "Can determine long repeating patterns for part 2"
+                (repeating-pattern? 212121212121212121)
+                #t)
+      
+      (test-eq? "Does not include non-repeating patterns"
+                (repeating-pattern? 523)
+                #f)
+
+      (test-eq? "Can compute correct result on sample for part 2"
+                (sum-periodic-digits-in-ranges sample)
+                4174379265)
+
+      (test-eq? "Can compute correct result on input.txt for part 2"
+                (sum-periodic-digits-in-ranges input)
+                28858486244)))
   (run-tests suite))
