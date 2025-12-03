@@ -1,19 +1,48 @@
 #lang racket
 
-(provide sum-highest-joltage-pairs-of)
+(require racket/list)
 
-(define (highest-joltages-of input)
-  (let ([digits (map (lambda (c) (- (char->integer c) (char->integer #\0))) (string->list input))])
-    (define (loop max-joltage i j)
-      (if (>= i (length digits))
-          max-joltage
-          (if (>= j (length digits))
-              (loop max-joltage (+ i 1) (+ i 2))
-              (let* ([first (list-ref digits i)]
-                     [second (list-ref digits j)]
-                     [current-joltage (+ (* 10 first) second)])
-                (loop (max max-joltage current-joltage) i (+ j 1))))))
-    (loop 0 0 1)))
+(provide sum-highest-joltage-pairs-of
+         largest-joltage-of
+         sum-largest-joltage-of)
+
+; Shared helpers
+(define (string->digit-vector s)
+  (list->vector
+   (map (lambda (c) (- (char->integer c) (char->integer #\0)))
+        (string->list s))))
+
+(define (pop-while stack drops d)
+  (cond
+    [(and (> drops 0) (pair? stack) (< (car stack) d))
+     (pop-while (cdr stack) (sub1 drops) d)]
+    [else (values stack drops)]))
+
+(define (max-subsequence-number vec k)
+  (let* ([n (vector-length vec)]
+         [keep (min k n)]
+         [drops (- n keep)])
+    
+    (define-values (stack _)
+      (for/fold ([stk '()] [drp drops]) ([d (in-vector vec)])
+        (define-values (stk* drp*) (pop-while stk drp d))
+        (values (cons d stk*) drp*)))
+
+    (define picked (take (reverse stack) keep))
+    
+    (for/fold ([acc 0]) ([d picked])
+      (+ (* acc 10) d))))
+
+; Part 1
+(define (highest-joltages-of s)
+  (max-subsequence-number (string->digit-vector s) 2))
 
 (define (sum-highest-joltage-pairs-of input-list)
   (apply + (map highest-joltages-of input-list)))
+
+; Part 2
+(define (largest-joltage-of s)
+  (max-subsequence-number (string->digit-vector s) 12))
+
+(define (sum-largest-joltage-of input-list)
+  (apply + (map largest-joltage-of input-list)))
