@@ -2,7 +2,8 @@
 
 (require racket/list)
 
-(provide compute-total)
+(provide compute-total
+         compute-total-2)
 
 (define (text->grid text)
   (let* ([lines0 (regexp-split #px"\r?\n" text)]
@@ -32,6 +33,18 @@
                 (and (positive? (string-length ds)) (string->number ds)))))
     ))
 
+(define (nums-by-cols grid start end)
+  (let* ([h (length grid)]
+         [top (take grid (sub1 h))])
+    (filter values
+            (for/list ([j (in-range (sub1 end) (sub1 start) -1)])
+              (let ([ds (list->string
+                         (for/list ([row top]
+                                    #:when (char-numeric? (string-ref row j)))
+                           (string-ref row j)))])
+                (and (positive? (string-length ds)) (string->number ds)))))
+    ))
+
 (define (op-in-block grid start end)
   (let* ([bottom (list-ref grid (sub1 (length grid)))]
          [seg (substring bottom start end)]
@@ -54,3 +67,6 @@
 
 (define (compute-total text)
   (solve-with text nums-by-rows))
+
+(define (compute-total-2 text)
+  (solve-with text nums-by-cols))

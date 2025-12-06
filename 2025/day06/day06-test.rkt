@@ -24,5 +24,13 @@
 
       (test-eq? "Can find the correct result from input.txt for Part 1"
                 (compute-total input)
-                4412382293768)))
+                4412382293768)
+
+      (test-eq? "Can solve sample case for Part 2"
+                (compute-total-2 sample)
+                3263827)
+
+      (test-eq? "Can find the correct result from input.txt for Part 2"
+                (compute-total-2 input)
+                7858808482092)))
   (run-tests suite))
