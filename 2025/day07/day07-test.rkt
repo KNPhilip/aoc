@@ -34,5 +34,13 @@
 
       (test-eq? "Can find the correct result from input.txt for Part 1"
                 (solve-laboratories input)
-                1633)))
+                1633)
+
+      (test-eq? "Can solve sample case for Part 2"
+                (solve-laboratories-quantum sample)
+                40)
+
+      (test-eq? "Can find the correct result from input.txt for Part 2"
+                (solve-laboratories-quantum input)
+                34339203133559)))
   (run-tests suite))

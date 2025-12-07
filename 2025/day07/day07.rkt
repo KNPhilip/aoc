@@ -2,8 +2,10 @@
 
 (require racket/string)
 
-(provide solve-laboratories)
+(provide solve-laboratories
+         solve-laboratories-quantum)
 
+; Shared
 (define (lines->grid lines)
   (let ([w (apply max 0 (map string-length lines))])
     (map (λ (s) (string-append s
@@ -30,6 +32,7 @@
                     [else (loop-c (add1 c))])))
           ))))
 
+; Part 1
 (define (step-row-bool row beams)
   (let* ([w (vector-length beams)]
          [next (make-vector w #f)])
@@ -63,4 +66,40 @@
             acc
             (let-values ([(nb s) (step-row-bool (list-ref grid r) beams)])
               (loop (add1 r) nb (+ acc s))))
+        ))))
+
+; Part 2
+(define (step-row-count row counts)
+  (let* ([w (vector-length counts)]
+         [next (make-vector w 0)])
+    (let loop ([c 0])
+      (if (= c w)
+          next
+          (let ([k (vector-ref counts c)])
+            (if (= k 0)
+                (loop (add1 c))
+                (let ([ch (string-ref row c)])
+                  (if (char=? ch #\^)
+                      (begin
+                        (when (> c 0)
+                          (vector-set! next (sub1 c)
+                                       (+ (vector-ref next (sub1 c)) k)))
+                        (when (< c (sub1 w))
+                          (vector-set! next (add1 c)
+                                       (+ (vector-ref next (add1 c)) k))))
+                      (vector-set! next c (+ (vector-ref next c) k)))
+                  (loop (add1 c)))))
+          ))))
+
+(define (solve-laboratories-quantum input)
+  (let* ([grid (input->grid input)]
+         [h    (length grid)]
+         [w    (if (zero? h) 0 (string-length (car grid)))])
+    (when (zero? h) (error 'solve-laboratories-quantum "empty grid"))
+    (let-values ([(sr sc) (find-start grid)])
+      (let loop ([r (add1 sr)]
+                 [counts (let ([v (make-vector w 0)]) (vector-set! v sc 1) v)])
+        (if (= r h)
+            (for/sum ([k (in-vector counts)]) k)
+            (loop (add1 r) (step-row-count (list-ref grid r) counts)))
         ))))
