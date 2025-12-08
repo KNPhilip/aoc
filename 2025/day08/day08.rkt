@@ -3,7 +3,8 @@
 (require racket/string
          racket/list)
 
-(provide solve-playground)
+(provide solve-playground
+         solve-playground-last-x-product)
 
 (define (xyz-lines->vector lines)
   (list->vector
@@ -131,3 +132,33 @@
     (for ([p (in-list pairs)])
       (dsu-union! parent sz (vector-ref p 1) (vector-ref p 2)))
     (product-top3 parent sz)))
+
+;; Part 2: connect pairs (sorted by distance) until fully connected; return X_i * X_j of last merge
+(define (solve-playground-last-x-product lines)
+  (define pts (xyz-lines->vector lines))
+  (define n (vector-length pts))
+  (define pairs
+    (let ([ps (for*/list ([i (in-range n)]
+                          [j (in-range (add1 i) n)])
+                (vector (dist2 pts i j) i j))])
+      (define (pair< a b)
+        (define da (vector-ref a 0)) (define db (vector-ref b 0))
+        (cond [(< da db) #t]
+              [(> da db) #f]
+              [else (define ia (vector-ref a 1)) (define ib (vector-ref b 1))
+                    (cond [(< ia ib) #t]
+                          [(> ia ib) #f]
+                          [else (< (vector-ref a 2) (vector-ref b 2))])]))
+      (sort ps pair<)))
+  (define-values (parent sz) (make-dsu n))
+  (let loop ([ps pairs] [components n])
+       (define i (vector-ref (car ps) 1))
+       (define j (vector-ref (car ps) 2))
+       (if (dsu-union! parent sz i j)
+           (let ([components2 (sub1 components)])
+             (if (= components2 1)
+                 (let ([xi (vector-ref (vector-ref pts i) 0)]
+                       [xj (vector-ref (vector-ref pts j) 0)])
+                   (* xi xj))
+                 (loop (cdr ps) components2)))
+           (loop (cdr ps) components))))

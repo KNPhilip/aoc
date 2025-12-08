@@ -62,6 +62,46 @@
 
       (test-case "Part 1: All duplicates (4 same points) k=1 -> 2"
         (define l (pts->lines '((7 7 7) (7 7 7) (7 7 7) (7 7 7))))
-        (check-equal? (solve-playground l 1) 2))))
+        (check-equal? (solve-playground l 1) 2))
+
+      (test-case "Part 2: Sample"
+        (check-equal? (solve-playground-last-x-product sample) 25272))
+
+      (test-case "Part 2: input.txt"
+        (check-equal? (solve-playground-last-x-product input) 31182420))
+
+      (test-case "Part 2: 2 points -> Xi*Xj"
+        (define l (pts->lines '((2 0 0) (5 0 0))))
+        (check-equal? (solve-playground-last-x-product l) (* 2 5)))
+
+      (test-case "Part 2: 3 points line -> last edge 1-2 -> 3*10"
+        (define l (pts->lines '((0 0 0) (3 0 0) (10 0 0))))
+        (check-equal? (solve-playground-last-x-product l) (* 3 10)))
+
+      (test-case "Part 2: Two close pairs -> final bridge 1-2 -> 1*10"
+        (define l (pts->lines '((0 0 0) (1 0 0) (10 0 0) (11 0 0))))
+        (check-equal? (solve-playground-last-x-product l) (* 1 10)))
+
+      (test-case "P2: 3 points uneven -> last edge 0-1 -> 0"
+        (define l (pts->lines '((0 0 0) (100 0 0) (101 0 0))))
+        (check-equal? (solve-playground-last-x-product l) 0))
+
+      (test-case "Part 2: X=0 line (4 points) -> product 0"
+        (define l (pts->lines '((0 0 0) (0 1 0) (0 2 0) (0 3 0))))
+        (check-equal? (solve-playground-last-x-product l) 0))
+
+      (test-case "Part 2: Duplicates then chain -> final bridge 2-3 -> 8*9=72"
+        (define l (pts->lines '((7 0 0) (7 0 0) (8 0 0) (9 0 0))))
+        (check-equal? (solve-playground-last-x-product l) 72))
+
+      (test-case "Part 2: All duplicates (3 same + 1) -> final edge 2-3 -> 5*6=30"
+        (define l (pts->lines '((5 1 0) (5 2 0) (5 3 0) (6 0 0))))
+        (check-equal? (solve-playground-last-x-product l) (* 5 6)))
+
+      (test-case "Part 2: Three clusters chain -> final bridge 101-1000 -> 101000"
+        (define l (pts->lines '((0 0 0) (1 0 0)
+                                (100 0 0) (101 0 0)
+                                (1000 0 0) (1001 0 0))))
+        (check-equal? (solve-playground-last-x-product l) (* 101 1000)))))
 
   (run-tests suite))
