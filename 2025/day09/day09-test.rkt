@@ -14,5 +14,11 @@
         (check-equal? (largest-rectangle-area sample) 50))
 
       (test-case "Can find the correct result from input.txt for Part 1"
-        (check-equal? (largest-rectangle-area input) 4737096935))))
+        (check-equal? (largest-rectangle-area input) 4737096935))
+
+      (test-case "Can solve sample case for Part 2"
+        (check-equal? (largest-rectangle-area-green sample) 24))
+
+      (test-case "Can find the correct result from input.txt for Part 2"
+        (check-equal? (largest-rectangle-area-green input) 1644094530))))
   (run-tests suite))
